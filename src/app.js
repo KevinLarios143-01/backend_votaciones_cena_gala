@@ -15,9 +15,15 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://frontendcenagala-production.up.railway.app']
+  origin: ['http://localhost:3000', 'https://frontendcenagala-production.up.railway.app'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-ID']
 }));
 app.use(express.json());
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Routes
 app.use('/api/auth', authRoutes);
