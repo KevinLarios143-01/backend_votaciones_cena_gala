@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  adminUserId String?
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  users        User[]
+  categories   Category[]
+  participants Participant[]
+  nominations  Nomination[]
+  votes        Vote[]
+  finalists    Finalist[]
+
+  @@map("tenants")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String
+  password     String
+  name         String
+  role         Role          @default(PARTICIPANT)
+  tenantId     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  nominations  Nomination[]
+  votes        Vote[]
+  participants Participant[]
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([email, tenantId])
+  @@map("users")
+}
+
+model Category {
+  id                  String         @id @default(cuid())
+  name                String
+  description         String?
+  status              CategoryStatus @default(NOMINATION)
+  nominationStartDate DateTime?
+  nominationEndDate   DateTime?
+  votingStartDate     DateTime?
+  votingEndDate       DateTime?
+  tenantId            String
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  finalists           Finalist[]
+  nominations         Nomination[]
+  participants        Participant[]
+  votes               Vote[]
+  tenant              Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("categories")
+}
+
+model Participant {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  categoryId  String
+  userId      String?
+  tenantId    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  finalists   Finalist[]
+  nominations Nomination[]
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("participants")
+}
+
+model Nomination {
+  id            String      @id @default(cuid())
+  userId        String
+  categoryId    String
+  participantId String
+  tenantId      String
+  createdAt     DateTime    @default(now())
+  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant        Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryId, participantId])
+  @@map("nominations")
+}
+
+model Finalist {
+  id              String      @id @default(cuid())
+  categoryId      String
+  participantId   String
+  nominationCount Int         @default(0)
+  tenantId        String
+  createdAt       DateTime    @default(now())
+  category        Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  participant     Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  tenant          Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  votes           Vote[]
+
+  @@unique([categoryId, participantId])
+  @@map("finalists")
+}
+
+model Vote {
+  id         String   @id @default(cuid())
+  userId     String
+  categoryId String
+  finalistId String
+  tenantId   String
+  createdAt  DateTime @default(now())
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  finalist   Finalist @relation(fields: [finalistId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryId])
+  @@map("votes")
+}
+
+model VoteSession {
+  id        String   @id @default(cuid())
+  name      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("vote_sessions")
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  PARTICIPANT
+}
+
+enum CategoryStatus {
+  NOMINATION
+  SELECTION_FINALISTS
+  VOTING_FINAL
+  FINISHED
+}

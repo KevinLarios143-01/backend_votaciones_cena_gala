@@ -1,0 +1,28 @@
+{
+  "name": "votaciones-backend",
+  "version": "1.0.0",
+  "description": "Backend para sistema de votaciones",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "node prisma/seed.js",
+    "db:seed-jni": "node prisma/seed-jni-pros.js",
+    "db:seed-extended": "node prisma/seed-extended-jni.js",
+    "db:reset": "prisma migrate reset --force"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "@prisma/client": "^5.6.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "prisma": "^5.6.0"
+  }
+}
