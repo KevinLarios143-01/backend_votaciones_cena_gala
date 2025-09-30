@@ -14,7 +14,9 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://frontendcenagala-production.up.railway.app']
+}));
 app.use(express.json());
 
 // Routes
