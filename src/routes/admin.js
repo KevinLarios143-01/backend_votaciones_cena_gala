@@ -79,4 +79,57 @@ router.post('/reset-system', authenticateToken, async (req, res) => {
   }
 });
 
+// Eliminar todos los usuarios participantes
+router.post('/delete-all-users', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERADMIN') {
+      return res.status(403).json({ 
+        success: false,
+        error: 'Solo administradores pueden eliminar usuarios' 
+      });
+    }
+
+    const tenantId = req.user.tenantId;
+    console.log('Deleting all participant users for tenant:', tenantId);
+
+    // Delete all related data first
+    await prisma.vote.deleteMany({ where: { tenantId } });
+    await prisma.finalist.deleteMany({ where: { tenantId } });
+    await prisma.nomination.deleteMany({ where: { tenantId } });
+    await prisma.participant.deleteMany({ where: { tenantId } });
+
+    // Delete only PARTICIPANT users (keep ADMIN and SUPERADMIN)
+    const deletedUsers = await prisma.user.deleteMany({
+      where: { 
+        tenantId,
+        role: 'PARTICIPANT'
+      }
+    });
+
+    // Reset all categories to NOMINATION status
+    await prisma.category.updateMany({
+      where: { tenantId },
+      data: { status: 'NOMINATION' }
+    });
+
+    console.log('All participant users deleted!');
+
+    res.status(200).json({
+      success: true,
+      message: 'Todos los usuarios participantes eliminados exitosamente',
+      data: {
+        usersDeleted: deletedUsers.count
+      }
+    });
+
+  } catch (error) {
+    console.error('Error deleting users:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Error al eliminar usuarios',
+      details: error.message
+    });
+  }
+});
+
 module.exports = router;
