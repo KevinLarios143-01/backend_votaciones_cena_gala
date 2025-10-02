@@ -32,6 +32,7 @@ model User {
   email        String
   password     String
   name         String
+  imageUrl     String?
   role         Role          @default(PARTICIPANT)
   tenantId     String
   createdAt    DateTime      @default(now())

@@ -39,17 +39,15 @@ router.post('/reset-system', authenticateToken, async (req, res) => {
       where: { tenantId }
     });
 
-    // Recreate participants for each category (12 per category)
+    // Recreate participants for each category (all users with their photos)
     let totalParticipants = 0;
     for (const category of categories) {
-      const shuffled = [...users].sort(() => 0.5 - Math.random());
-      const selectedUsers = shuffled.slice(0, Math.min(12, users.length));
-
-      for (const user of selectedUsers) {
+      for (const user of users) {
         await prisma.participant.create({
           data: {
             name: user.name,
             description: `${user.name} - Participante`,
+            imageUrl: user.imageUrl,
             categoryId: category.id,
             tenantId: tenantId
           }
@@ -128,6 +126,44 @@ router.post('/delete-all-users', authenticateToken, async (req, res) => {
       success: false,
       error: 'Error al eliminar usuarios',
       details: error.message
+    });
+  }
+});
+
+// Obtener todos los usuarios del tenant
+router.get('/users', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERADMIN') {
+      return res.status(403).json({ 
+        success: false,
+        error: 'Solo administradores pueden ver usuarios' 
+      });
+    }
+
+    const users = await prisma.user.findMany({
+      where: { 
+        tenantId: req.user.tenantId,
+        role: 'PARTICIPANT'
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true
+      },
+      orderBy: { name: 'asc' }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: users
+    });
+
+  } catch (error) {
+    console.error('Error getting users:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Error al obtener usuarios'
     });
   }
 });
