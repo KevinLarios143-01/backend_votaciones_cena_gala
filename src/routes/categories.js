@@ -11,7 +11,17 @@ router.get('/', authenticateToken, asyncHandler(async (req, res) => {
   const categories = await prisma.category.findMany({
     where: { tenantId: req.user.tenantId },
     include: {
-      participants: true,
+      participants: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              imageUrl: true
+            }
+          }
+        }
+      },
       _count: {
         select: {
           nominations: true,
@@ -64,6 +74,7 @@ router.post('/', authenticateToken, requireAdmin, asyncHandler(async (req, res) 
       data: {
         name: user.name,
         description: `${user.name} - Candidato para ${category.name}`,
+        imageUrl: user.imageUrl,
         categoryId: category.id,
         userId: user.id,
         tenantId: req.user.tenantId
@@ -240,7 +251,17 @@ router.get('/:id/finalists', authenticateToken, asyncHandler(async (req, res) =>
       tenantId: req.user.tenantId
     },
     include: {
-      participant: true,
+      participant: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              imageUrl: true
+            }
+          }
+        }
+      },
       _count: {
         select: { votes: true }
       }

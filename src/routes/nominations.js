@@ -84,7 +84,17 @@ router.post('/', authenticateToken, async (req, res) => {
         tenantId: req.user.tenantId
       },
       include: {
-        participant: true
+        participant: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                imageUrl: true
+              }
+            }
+          }
+        }
       }
     });
 
@@ -118,7 +128,17 @@ router.get('/user-nomination/:categoryId', authenticateToken, async (req, res) =
         tenantId: req.user.tenantId
       },
       include: {
-        participant: true
+        participant: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                imageUrl: true
+              }
+            }
+          }
+        }
       }
     });
 
@@ -160,10 +180,19 @@ router.get('/category/:categoryId', authenticateToken, async (req, res) => {
       }
     });
 
-    // Obtener detalles de participantes
+    // Obtener detalles de participantes con usuario
     const participantIds = nominations.map(n => n.participantId);
     const participants = await prisma.participant.findMany({
-      where: { id: { in: participantIds } }
+      where: { id: { in: participantIds } },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            imageUrl: true
+          }
+        }
+      }
     });
 
     const result = nominations.map(nomination => {
@@ -245,7 +274,17 @@ router.post('/generate-finalists/:categoryId', authenticateToken, async (req, re
             tenantId: req.user.tenantId
           },
           include: {
-            participant: true
+            participant: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    imageUrl: true
+                  }
+                }
+              }
+            }
           }
         })
       )

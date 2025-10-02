@@ -16,6 +16,13 @@ router.get('/category/:categoryId', authenticateToken, async (req, res) => {
         tenantId: req.user.tenantId
       },
       include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            imageUrl: true
+          }
+        },
         _count: {
           select: { nominations: true }
         }

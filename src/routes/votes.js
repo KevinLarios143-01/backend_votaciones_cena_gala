@@ -21,7 +21,17 @@ router.get('/user-vote/:categoryId', authenticateToken, async (req, res) => {
       include: {
         finalist: {
           include: {
-            participant: true
+            participant: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    imageUrl: true
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -104,7 +114,17 @@ router.post('/', authenticateToken, asyncHandler(async (req, res) => {
     include: {
       finalist: {
         include: {
-          participant: true
+          participant: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  imageUrl: true
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -128,7 +148,17 @@ router.get('/results/:categoryId', authenticateToken, async (req, res) => {
         tenantId: req.user.tenantId
       },
       include: {
-        participant: true,
+        participant: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                imageUrl: true
+              }
+            }
+          }
+        },
         _count: {
           select: { votes: true }
         }

@@ -231,7 +231,7 @@ router.put('/users/:userId', authenticateToken, async (req, res) => {
 });
 
 // Actualizar solo la foto de un usuario
-router.patch('/users/:userId/photo', authenticateToken, async (req, res) => {
+router.put('/users/:userId/photo', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPERADMIN') {
       return res.status(403).json({ 
