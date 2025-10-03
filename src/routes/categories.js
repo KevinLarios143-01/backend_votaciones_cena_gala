@@ -74,7 +74,6 @@ router.post('/', authenticateToken, requireAdmin, asyncHandler(async (req, res) 
       data: {
         name: user.name,
         description: `${user.name} - Candidato para ${category.name}`,
-        imageUrl: user.imageUrl,
         categoryId: category.id,
         userId: user.id,
         tenantId: req.user.tenantId

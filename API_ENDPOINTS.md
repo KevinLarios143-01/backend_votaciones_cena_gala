@@ -564,7 +564,7 @@ GET /api/test-db
    - `ADMIN`: Gestión del tenant
    - `PARTICIPANT`: Solo votación y nominación
 3. **Tenant Isolation**: Los datos están aislados por tenant
-4. **Image URLs**: Se devuelven tanto en `participant.imageUrl` como en `user.imageUrl`
+4. **Image URLs**: Las imágenes se obtienen desde `user.imageUrl` (los participantes ya no tienen imageUrl propio)
 5. **Estados de Categoría**:
    - `NOMINATION`: Fase de nominaciones
    - `SELECTION_FINALISTS`: Selección de finalistas

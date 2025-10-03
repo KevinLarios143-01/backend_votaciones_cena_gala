@@ -71,7 +71,6 @@ model Participant {
   id          String       @id @default(cuid())
   name        String
   description String?
-  imageUrl    String?
   categoryId  String
   userId      String?
   tenantId    String

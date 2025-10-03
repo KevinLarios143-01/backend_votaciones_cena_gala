@@ -47,8 +47,8 @@ router.post('/reset-system', authenticateToken, async (req, res) => {
           data: {
             name: user.name,
             description: `${user.name} - Participante`,
-            imageUrl: user.imageUrl,
             categoryId: category.id,
+            userId: user.id,
             tenantId: tenantId
           }
         });

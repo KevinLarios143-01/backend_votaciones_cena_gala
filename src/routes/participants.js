@@ -39,13 +39,12 @@ router.get('/category/:categoryId', authenticateToken, async (req, res) => {
 // Crear participante (solo admin)
 router.post('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const { name, description, imageUrl, categoryId } = req.body;
+    const { name, description, categoryId } = req.body;
 
     const participant = await prisma.participant.create({
       data: {
         name,
         description,
-        imageUrl,
         categoryId,
         tenantId: req.user.tenantId
       }
@@ -62,7 +61,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
 router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, imageUrl } = req.body;
+    const { name, description } = req.body;
 
     const participant = await prisma.participant.update({
       where: { 
@@ -71,8 +70,7 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
       },
       data: {
         name,
-        description,
-        imageUrl
+        description
       }
     });
 
