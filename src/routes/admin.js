@@ -285,6 +285,45 @@ router.put('/users/:userId/photo', authenticateToken, async (req, res) => {
   }
 });
 
+// Endpoint temporal para cambiar rol de usuario (SOLO PARA DESARROLLO)
+router.post('/promote-user/:userId', authenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { role } = req.body; // 'ADMIN' o 'SUPERADMIN'
+
+    if (!['ADMIN', 'SUPERADMIN'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Rol inválido. Use ADMIN o SUPERADMIN'
+      });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Usuario promovido a ${role} exitosamente`,
+      data: updatedUser
+    });
+
+  } catch (error) {
+    console.error('Error promoting user:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Error al promover usuario'
+    });
+  }
+});
+
 // Obtener un usuario específico
 router.get('/users/:userId', authenticateToken, async (req, res) => {
   try {

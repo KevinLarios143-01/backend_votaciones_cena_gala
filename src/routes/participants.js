@@ -5,6 +5,38 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const router = express.Router();
 const prisma = new PrismaClient();
 
+// Obtener todos los usuarios participantes del tenant (accesible para todos)
+router.get('/users', authenticateToken, async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      where: { 
+        tenantId: req.user.tenantId,
+        role: 'PARTICIPANT'
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        imageUrl: true,
+        createdAt: true
+      },
+      orderBy: { name: 'asc' }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: users
+    });
+
+  } catch (error) {
+    console.error('Error getting participants:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Error al obtener participantes'
+    });
+  }
+});
+
 // Obtener participantes por categoría
 router.get('/category/:categoryId', authenticateToken, async (req, res) => {
   try {
