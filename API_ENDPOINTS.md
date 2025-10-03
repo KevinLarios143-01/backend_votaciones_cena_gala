@@ -178,7 +178,6 @@ Authorization: Bearer <token>
         {
           "id": "participant_id",
           "name": "Juan Pérez",
-          "imageUrl": "https://example.com/photo.jpg",
           "user": {
             "id": "user_id",
             "name": "Juan Pérez",
@@ -210,7 +209,6 @@ Authorization: Bearer <token>
       "participant": {
         "id": "participant_id",
         "name": "Juan Pérez",
-        "imageUrl": "https://example.com/photo.jpg",
         "user": {
           "id": "user_id",
           "name": "Juan Pérez",
@@ -257,7 +255,6 @@ Content-Type: application/json
     "participant": {
       "id": "participant_id",
       "name": "Juan Pérez",
-      "imageUrl": "https://example.com/photo.jpg",
       "user": {
         "id": "user_id",
         "name": "Juan Pérez",
@@ -289,7 +286,6 @@ Authorization: Bearer <token>
         "participant": {
           "id": "participant_id",
           "name": "Juan Pérez",
-          "imageUrl": "https://example.com/photo.jpg",
           "user": {
             "id": "user_id",
             "name": "Juan Pérez",
@@ -336,7 +332,6 @@ Content-Type: application/json
       "participant": {
         "id": "participant_id",
         "name": "Juan Pérez",
-        "imageUrl": "https://example.com/photo.jpg",
         "user": {
           "id": "user_id",
           "name": "Juan Pérez",
@@ -369,7 +364,6 @@ Authorization: Bearer <token>
         "participant": {
           "id": "participant_id",
           "name": "Juan Pérez",
-          "imageUrl": "https://example.com/photo.jpg",
           "user": {
             "id": "user_id",
             "name": "Juan Pérez",
@@ -399,7 +393,6 @@ Authorization: Bearer <token>
     "participant": {
       "id": "participant_id",
       "name": "Juan Pérez",
-      "imageUrl": "https://example.com/photo.jpg",
       "user": {
         "id": "user_id",
         "name": "Juan Pérez",
@@ -432,7 +425,6 @@ Authorization: Bearer <token>
     "id": "participant_id",
     "name": "Juan Pérez",
     "description": "Juan Pérez - Participante",
-    "imageUrl": "https://example.com/photo.jpg",
     "user": {
       "id": "user_id",
       "name": "Juan Pérez",
