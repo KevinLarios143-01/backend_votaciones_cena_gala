@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const { PrismaClient } = require('@prisma/client');
 require('dotenv').config();
+
+const prisma = new PrismaClient();
 
 const authRoutes = require('./routes/auth');
 const categoryRoutes = require('./routes/categories');
@@ -22,8 +25,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Handle preflight requests
-app.options('*', cors());
+
 
 // Routes
 app.use('/api/auth', authRoutes);
